@@ -30,7 +30,7 @@ function tg(msg) {
   fetch(`https://api.telegram.org/bot${TG_TOKEN}/sendMessage`, {
     method: 'POST',
     headers: {'Content-Type':'application/json'},
-    body: JSON.stringify({chat_id: 960957553, text: msg, parse_mode: 'HTML'})
+    body: JSON.stringify({chat_id: '960957553' , text: msg, parse_mode: 'HTML'})
   }).catch(()=>{});
 }
 
