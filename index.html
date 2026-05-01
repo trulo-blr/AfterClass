@@ -1,595 +1,1323 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 <title>AfterClass Bengaluru — Find the right activity for your child</title>
-<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet" />
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Instrument+Sans:wght@400;500;600&display=swap" rel="stylesheet"/>
+
+<!-- ============================================================
+  TRACKING SETUP — Replace these 2 values to get real-time
+  Telegram notifications when someone opens the page,
+  clicks a card, or WhatsApps a coach.
+
+  HOW TO SET UP (3 minutes):
+  1. Open Telegram → search @BotFather → send /newbot
+  2. Follow steps, copy the TOKEN it gives you
+  3. Send your new bot any message
+  4. Open: https://api.telegram.org/bot<TOKEN>/getUpdates
+  5. Find "chat":{"id": NUMBER} — that's your CHAT_ID
+  6. Paste both below and re-upload to GitHub
+============================================================ -->
+<script>
+const TG_TOKEN = 'YOUR_BOT_TOKEN';
+const TG_CHAT  = 'YOUR_CHAT_ID';
+const PAGE_NAME = 'AfterClass Bengaluru';
+
+function tg(msg) {
+  if (TG_TOKEN === 'YOUR_BOT_TOKEN') return;
+  fetch(`https://api.telegram.org/bot${TG_TOKEN}/sendMessage`, {
+    method: 'POST',
+    headers: {'Content-Type':'application/json'},
+    body: JSON.stringify({chat_id: TG_CHAT, text: msg, parse_mode: 'HTML'})
+  }).catch(()=>{});
+}
+
+// Track page open
+window.addEventListener('DOMContentLoaded', () => {
+  const device = /Mobile|Android|iPhone/i.test(navigator.userAgent) ? '📱 Mobile' : '💻 Desktop';
+  const ref = document.referrer || 'Direct';
+  tg(`👀 <b>Page opened</b> — ${PAGE_NAME}\nDevice: ${device}\nFrom: ${ref}\nTime: ${now()}`);
+  saveEvent('page_open', {device, ref});
+});
+
+// Track WhatsApp click
+function trackWA(name, area, cat, type) {
+  tg(`💬 <b>WhatsApp clicked!</b>\n<b>${name}</b>\nArea: ${area} · ${cat}\nType: ${type}\nTime: ${now()}`);
+  saveEvent('whatsapp_click', {name, area, cat, type});
+}
+
+// Track card expand
+function trackCard(name) {
+  tg(`🔍 <b>Card expanded</b>\n${name}\nTime: ${now()}`);
+  saveEvent('card_click', {name});
+}
+
+function now() {
+  return new Date().toLocaleString('en-IN', {timeZone:'Asia/Kolkata', day:'numeric', month:'short', hour:'2-digit', minute:'2-digit'});
+}
+
+function saveEvent(type, data) {
+  try {
+    const events = JSON.parse(localStorage.getItem('ac_events') || '[]');
+    events.push({type, data, time: new Date().toISOString()});
+    localStorage.setItem('ac_events', JSON.stringify(events));
+  } catch(e) {}
+}
+</script>
+
 <style>
-  :root {
-    --bg: #F5F2EC;
-    --card: #FDFCF9;
-    --ink: #1A1814;
-    --ink2: #5C5750;
-    --ink3: #9A9490;
-    --accent: #D95F2B;
-    --accent2: #2B6CB0;
-    --green: #276749;
-    --border: rgba(26,24,20,0.1);
-    --border2: rgba(26,24,20,0.06);
-  }
-  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-  html { scroll-behavior: smooth; }
-  body {
-    background: var(--bg);
-    color: var(--ink);
-    font-family: 'DM Sans', sans-serif;
-    font-weight: 400;
-    min-height: 100vh;
-  }
+:root {
+  --cream: #F7F3ED;
+  --warm-white: #FDFAF6;
+  --ink: #1C1814;
+  --ink2: #4A443E;
+  --ink3: #8C857D;
+  --rust: #C4522A;
+  --rust-light: rgba(196,82,42,0.08);
+  --green: #2D6A4F;
+  --green-light: rgba(45,106,79,0.08);
+  --gold: #B07D2E;
+  --border: rgba(28,24,20,0.10);
+  --border-soft: rgba(28,24,20,0.06);
+  --shadow: 0 2px 20px rgba(28,24,20,0.07);
+  --shadow-hover: 0 8px 40px rgba(28,24,20,0.12);
+  --radius: 16px;
+}
 
-  /* HEADER */
-  header {
-    padding: 2rem 2rem 0;
-    max-width: 1200px;
-    margin: 0 auto;
-  }
-  .wordmark {
-    font-family: 'Playfair Display', serif;
-    font-size: 20px;
-    font-weight: 600;
-    letter-spacing: -0.02em;
-    color: var(--ink);
-  }
-  .wordmark span { color: var(--accent); }
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
-  /* HERO */
-  .hero {
-    max-width: 1200px;
-    margin: 0 auto;
-    padding: 3rem 2rem 2rem;
-    display: grid;
-    grid-template-columns: 1fr auto;
-    align-items: end;
-    gap: 2rem;
-    border-bottom: 1px solid var(--border);
-  }
-  .hero-left h1 {
-    font-family: 'Playfair Display', serif;
-    font-size: clamp(2rem, 5vw, 3.5rem);
-    font-weight: 400;
-    line-height: 1.15;
-    letter-spacing: -0.02em;
-    color: var(--ink);
-    max-width: 600px;
-  }
-  .hero-left h1 em {
-    font-style: italic;
-    color: var(--accent);
-  }
-  .hero-left p {
-    margin-top: 1rem;
-    font-size: 15px;
-    color: var(--ink2);
-    line-height: 1.6;
-    max-width: 480px;
-  }
-  .hero-right {
-    text-align: right;
-    padding-bottom: 4px;
-  }
-  .hero-stat {
-    font-family: 'Playfair Display', serif;
-    font-size: 3rem;
-    font-weight: 600;
-    color: var(--ink);
-    line-height: 1;
-  }
-  .hero-stat-label {
-    font-size: 12px;
-    color: var(--ink3);
-    margin-top: 4px;
-    letter-spacing: 0.05em;
-    text-transform: uppercase;
-  }
+html { scroll-behavior: smooth; }
 
-  /* FILTERS */
-  .filters-wrap {
-    max-width: 1200px;
-    margin: 0 auto;
-    padding: 1.5rem 2rem;
-    display: flex;
-    flex-wrap: wrap;
-    gap: 10px;
-    align-items: center;
-    border-bottom: 1px solid var(--border2);
-  }
-  .search-input {
-    height: 40px;
-    padding: 0 14px;
-    border-radius: 20px;
-    border: 1px solid var(--border);
-    background: var(--card);
-    color: var(--ink);
-    font-size: 13px;
-    font-family: 'DM Sans', sans-serif;
-    width: 200px;
-    outline: none;
-    transition: border-color 0.2s;
-  }
-  .search-input:focus { border-color: var(--accent); }
-  .search-input::placeholder { color: var(--ink3); }
-  select {
-    height: 40px;
-    padding: 0 14px;
-    border-radius: 20px;
-    border: 1px solid var(--border);
-    background: var(--card);
-    color: var(--ink);
-    font-size: 13px;
-    font-family: 'DM Sans', sans-serif;
-    outline: none;
-    cursor: pointer;
-    appearance: none;
-    padding-right: 28px;
-    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%239A9490' d='M6 8L1 3h10z'/%3E%3C/svg%3E");
-    background-repeat: no-repeat;
-    background-position: right 10px center;
-    transition: border-color 0.2s;
-  }
-  select:focus { border-color: var(--accent); }
-  .sep { width: 1px; height: 24px; background: var(--border); }
-  .pill-btn {
-    height: 36px;
-    padding: 0 16px;
-    border-radius: 20px;
-    border: 1px solid var(--border);
-    background: transparent;
-    color: var(--ink2);
-    font-size: 13px;
-    font-family: 'DM Sans', sans-serif;
-    cursor: pointer;
-    transition: all 0.15s;
-  }
-  .pill-btn:hover { border-color: var(--ink2); color: var(--ink); }
-  .pill-btn.active {
-    background: var(--ink);
-    color: var(--bg);
-    border-color: var(--ink);
-  }
+body {
+  background: var(--cream);
+  color: var(--ink);
+  font-family: 'Instrument Sans', sans-serif;
+  font-size: 15px;
+  line-height: 1.6;
+  min-height: 100vh;
+}
 
-  /* MAIN */
-  .main {
-    max-width: 1200px;
-    margin: 0 auto;
-    padding: 1.5rem 2rem 4rem;
-  }
-  .results-meta {
-    font-size: 12px;
-    color: var(--ink3);
-    letter-spacing: 0.04em;
-    text-transform: uppercase;
-    margin-bottom: 1.25rem;
-  }
+/* ── HEADER ── */
+.header {
+  background: var(--warm-white);
+  border-bottom: 1px solid var(--border);
+  padding: 0 2rem;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  backdrop-filter: blur(12px);
+}
+.header-inner {
+  max-width: 1200px;
+  margin: 0 auto;
+  height: 60px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.wordmark {
+  font-family: 'Fraunces', serif;
+  font-size: 20px;
+  font-weight: 600;
+  color: var(--ink);
+  letter-spacing: -0.02em;
+}
+.wordmark span { color: var(--rust); font-style: italic; }
+.header-right { display: flex; align-items: center; gap: 10px; }
+.btn-list {
+  padding: 7px 16px;
+  border-radius: 20px;
+  background: var(--rust);
+  color: white;
+  font-size: 13px;
+  font-weight: 500;
+  border: none;
+  cursor: pointer;
+  font-family: 'Instrument Sans', sans-serif;
+  transition: background 0.15s;
+}
+.btn-list:hover { background: #a84422; }
+.btn-admin {
+  padding: 7px 14px;
+  border-radius: 20px;
+  background: transparent;
+  color: var(--ink3);
+  font-size: 12px;
+  border: 1px solid var(--border);
+  cursor: pointer;
+  font-family: 'Instrument Sans', sans-serif;
+}
 
-  /* GRID */
-  .grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-    gap: 1px;
-    border: 1px solid var(--border);
-    border-radius: 16px;
-    overflow: hidden;
-    background: var(--border);
-  }
-  .card {
-    background: var(--card);
-    padding: 1.5rem;
-    display: flex;
-    flex-direction: column;
-    gap: 14px;
-    transition: background 0.15s;
-    cursor: default;
-  }
-  .card:hover { background: #FFFEF9; }
-  .card-head {
-    display: flex;
-    justify-content: space-between;
-    align-items: flex-start;
-    gap: 12px;
-  }
-  .activity-icon {
-    width: 44px;
-    height: 44px;
-    border-radius: 12px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 22px;
-    flex-shrink: 0;
-    background: var(--bg);
-  }
-  .cat-tag {
-    font-size: 10px;
-    letter-spacing: 0.07em;
-    text-transform: uppercase;
-    font-weight: 500;
-    padding: 4px 10px;
-    border-radius: 20px;
-    border: 1px solid var(--border);
-    color: var(--ink2);
-    white-space: nowrap;
-    margin-top: 2px;
-  }
-  .cat-tag.sport { color: #276749; border-color: rgba(39,103,73,0.3); background: rgba(39,103,73,0.06); }
-  .cat-tag.arts { color: #6B3D9F; border-color: rgba(107,61,159,0.3); background: rgba(107,61,159,0.06); }
-  .cat-tag.music { color: #9C4A1A; border-color: rgba(156,74,26,0.3); background: rgba(156,74,26,0.06); }
-  .cat-tag.dance { color: #9C1A5E; border-color: rgba(156,26,94,0.3); background: rgba(156,26,94,0.06); }
-  .cat-tag.stem { color: #185FA5; border-color: rgba(24,95,165,0.3); background: rgba(24,95,165,0.06); }
-  .card-title {
-    font-family: 'Playfair Display', serif;
-    font-size: 17px;
-    font-weight: 400;
-    color: var(--ink);
-    line-height: 1.3;
-  }
-  .card-area {
-    font-size: 12px;
-    color: var(--ink3);
-    margin-top: 1px;
-  }
-  .card-desc {
-    font-size: 13px;
-    color: var(--ink2);
-    line-height: 1.6;
-  }
-  .card-chips {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 6px;
-  }
-  .chip {
-    font-size: 11px;
-    color: var(--ink2);
-    padding: 3px 9px;
-    border-radius: 20px;
-    border: 1px solid var(--border2);
-    background: var(--bg);
-  }
-  .chip.avail { color: var(--green); border-color: rgba(39,103,73,0.25); background: rgba(39,103,73,0.06); }
-  .chip.full { color: var(--ink3); }
-  .chip.trial { color: var(--accent); border-color: rgba(217,95,43,0.25); background: rgba(217,95,43,0.05); }
-  .card-footer {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    margin-top: auto;
-    padding-top: 12px;
-    border-top: 1px solid var(--border2);
-  }
-  .price-block { }
-  .price-amount {
-    font-size: 18px;
-    font-weight: 500;
-    color: var(--ink);
-    font-family: 'Playfair Display', serif;
-  }
-  .price-unit { font-size: 11px; color: var(--ink3); margin-left: 3px; }
-  .rating-row {
-    display: flex;
-    align-items: center;
-    gap: 4px;
-    font-size: 12px;
-    color: var(--ink2);
-  }
-  .star { color: #D4A017; font-size: 12px; }
-  .rating-num { font-weight: 500; color: var(--ink); }
-  .cta-btn {
-    padding: 8px 16px;
-    border-radius: 20px;
-    border: 1px solid var(--ink);
-    background: transparent;
-    color: var(--ink);
-    font-size: 12px;
-    font-family: 'DM Sans', sans-serif;
-    font-weight: 500;
-    cursor: pointer;
-    transition: all 0.15s;
-    text-decoration: none;
-    display: inline-block;
-  }
-  .cta-btn:hover { background: var(--ink); color: var(--bg); }
-  .cta-btn.primary { background: var(--accent); color: white; border-color: var(--accent); }
-  .cta-btn.primary:hover { background: #c0511f; border-color: #c0511f; }
+/* ── HERO ── */
+.hero {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 3.5rem 2rem 2.5rem;
+}
+.hero-grid {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  align-items: end;
+  gap: 2rem;
+}
+.hero-eyebrow {
+  font-size: 11px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--rust);
+  font-weight: 600;
+  margin-bottom: 12px;
+}
+.hero-title {
+  font-family: 'Fraunces', serif;
+  font-size: clamp(2.2rem, 5vw, 3.8rem);
+  font-weight: 300;
+  line-height: 1.1;
+  letter-spacing: -0.03em;
+  color: var(--ink);
+}
+.hero-title em {
+  font-style: italic;
+  color: var(--rust);
+}
+.hero-sub {
+  margin-top: 1rem;
+  font-size: 15px;
+  color: var(--ink2);
+  max-width: 500px;
+  line-height: 1.7;
+}
+.hero-stats {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  align-items: flex-end;
+  padding-bottom: 4px;
+}
+.stat { text-align: right; }
+.stat-num {
+  font-family: 'Fraunces', serif;
+  font-size: 2.8rem;
+  font-weight: 600;
+  color: var(--ink);
+  line-height: 1;
+}
+.stat-label {
+  font-size: 11px;
+  color: var(--ink3);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  margin-top: 2px;
+}
 
-  /* EMPTY */
-  .empty {
-    grid-column: 1 / -1;
-    background: var(--card);
-    padding: 4rem 2rem;
-    text-align: center;
-    color: var(--ink3);
-    font-size: 15px;
-  }
+/* ── FILTERS ── */
+.filters-bar {
+  background: var(--warm-white);
+  border-top: 1px solid var(--border-soft);
+  border-bottom: 1px solid var(--border-soft);
+  padding: 1rem 2rem;
+}
+.filters-inner {
+  max-width: 1200px;
+  margin: 0 auto;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  align-items: center;
+}
+.search-wrap {
+  position: relative;
+  flex-shrink: 0;
+}
+.search-icon {
+  position: absolute;
+  left: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: var(--ink3);
+  font-size: 14px;
+  pointer-events: none;
+}
+.search-input {
+  height: 38px;
+  padding: 0 14px 0 34px;
+  border-radius: 20px;
+  border: 1px solid var(--border);
+  background: var(--cream);
+  color: var(--ink);
+  font-size: 13px;
+  font-family: 'Instrument Sans', sans-serif;
+  width: 210px;
+  outline: none;
+}
+.search-input:focus { border-color: var(--rust); }
+.search-input::placeholder { color: var(--ink3); }
+select.filter-select {
+  height: 38px;
+  padding: 0 28px 0 12px;
+  border-radius: 20px;
+  border: 1px solid var(--border);
+  background: var(--cream);
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='10' viewBox='0 0 10 10'%3E%3Cpath fill='%238C857D' d='M5 7L0 2h10z'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 10px center;
+  appearance: none;
+  color: var(--ink);
+  font-size: 13px;
+  font-family: 'Instrument Sans', sans-serif;
+  outline: none;
+  cursor: pointer;
+}
+select.filter-select:focus { border-color: var(--rust); }
+.divider-v { width: 1px; height: 22px; background: var(--border); flex-shrink: 0; }
+.pill {
+  height: 36px;
+  padding: 0 14px;
+  border-radius: 20px;
+  border: 1px solid var(--border);
+  background: transparent;
+  color: var(--ink2);
+  font-size: 12px;
+  font-weight: 500;
+  cursor: pointer;
+  font-family: 'Instrument Sans', sans-serif;
+  transition: all 0.15s;
+  white-space: nowrap;
+}
+.pill:hover { border-color: var(--ink2); color: var(--ink); }
+.pill.active { background: var(--ink); color: var(--cream); border-color: var(--ink); }
 
-  /* FOOTER */
-  footer {
-    max-width: 1200px;
-    margin: 0 auto;
-    padding: 1.5rem 2rem 2rem;
-    border-top: 1px solid var(--border);
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    flex-wrap: wrap;
-    gap: 1rem;
-  }
-  .footer-text { font-size: 12px; color: var(--ink3); }
-  .list-cta {
-    padding: 10px 20px;
-    border-radius: 20px;
-    background: var(--accent);
-    color: white;
-    font-size: 13px;
-    font-weight: 500;
-    font-family: 'DM Sans', sans-serif;
-    border: none;
-    cursor: pointer;
-    transition: background 0.15s;
-  }
-  .list-cta:hover { background: #c0511f; }
+/* ── MAIN ── */
+.main {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 1.5rem 2rem 5rem;
+}
+.results-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 1.25rem;
+}
+.results-count {
+  font-size: 12px;
+  color: var(--ink3);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
 
-  @media (max-width: 640px) {
-    .hero { grid-template-columns: 1fr; }
-    .hero-right { text-align: left; }
-    .filters-wrap { gap: 8px; }
-    .search-input { width: 100%; }
-  }
+/* ── GRID ── */
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+  gap: 16px;
+}
+
+/* ── CARD ── */
+.card {
+  background: var(--warm-white);
+  border: 1px solid var(--border-soft);
+  border-radius: var(--radius);
+  overflow: hidden;
+  box-shadow: var(--shadow);
+  transition: box-shadow 0.2s, transform 0.2s;
+}
+.card:hover {
+  box-shadow: var(--shadow-hover);
+  transform: translateY(-2px);
+}
+.card-accent {
+  height: 4px;
+  width: 100%;
+}
+.card-body { padding: 1.25rem; }
+.card-top {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 10px;
+  margin-bottom: 10px;
+}
+.card-icon {
+  width: 46px;
+  height: 46px;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 22px;
+  flex-shrink: 0;
+  background: var(--cream);
+}
+.card-identity { flex: 1; }
+.card-name {
+  font-family: 'Fraunces', serif;
+  font-size: 16px;
+  font-weight: 400;
+  color: var(--ink);
+  line-height: 1.25;
+}
+.card-area {
+  font-size: 12px;
+  color: var(--ink3);
+  margin-top: 2px;
+}
+.cat-pill {
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  padding: 3px 9px;
+  border-radius: 20px;
+  flex-shrink: 0;
+  margin-top: 2px;
+}
+.cat-sports  { background: rgba(45,106,79,0.1);  color: #2D6A4F; }
+.cat-arts    { background: rgba(107,61,159,0.1); color: #6B3D9F; }
+.cat-dance   { background: rgba(196,26,94,0.1);  color: #C41A5E; }
+.cat-stem    { background: rgba(24,95,165,0.1);  color: #185FA5; }
+.cat-music   { background: rgba(176,125,46,0.1); color: #B07D2E; }
+.cat-wellness{ background: rgba(196,82,42,0.1);  color: #C4522A; }
+
+.card-desc {
+  font-size: 13px;
+  color: var(--ink2);
+  line-height: 1.6;
+  margin-bottom: 12px;
+}
+.chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 5px;
+  margin-bottom: 14px;
+}
+.chip {
+  font-size: 11px;
+  padding: 3px 9px;
+  border-radius: 20px;
+  border: 1px solid var(--border-soft);
+  background: var(--cream);
+  color: var(--ink2);
+  white-space: nowrap;
+}
+.chip-green { background: var(--green-light); color: var(--green); border-color: rgba(45,106,79,0.2); }
+.chip-rust  { background: var(--rust-light);  color: var(--rust);  border-color: rgba(196,82,42,0.2); }
+.chip-gold  { background: rgba(176,125,46,0.08); color: var(--gold); border-color: rgba(176,125,46,0.2); }
+
+.card-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding-top: 12px;
+  border-top: 1px solid var(--border-soft);
+}
+.price-main {
+  font-family: 'Fraunces', serif;
+  font-size: 18px;
+  font-weight: 400;
+  color: var(--ink);
+}
+.price-unit { font-size: 11px; color: var(--ink3); }
+.price-annual { font-size: 11px; color: var(--ink3); margin-top: 1px; }
+.wa-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 16px;
+  border-radius: 20px;
+  background: var(--rust);
+  color: white;
+  font-size: 12px;
+  font-weight: 500;
+  font-family: 'Instrument Sans', sans-serif;
+  text-decoration: none;
+  border: none;
+  cursor: pointer;
+  transition: background 0.15s;
+}
+.wa-btn:hover { background: #a84422; }
+.wa-btn svg { width: 14px; height: 14px; fill: white; flex-shrink: 0; }
+
+.mode-badge {
+  display: inline-block;
+  font-size: 10px;
+  font-weight: 600;
+  padding: 2px 7px;
+  border-radius: 4px;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+.mode-offline  { background: var(--green-light); color: var(--green); }
+.mode-online   { background: var(--rust-light);  color: var(--rust); }
+.mode-both     { background: rgba(176,125,46,0.1); color: var(--gold); }
+
+/* ── EMPTY ── */
+.empty {
+  grid-column: 1/-1;
+  text-align: center;
+  padding: 4rem 2rem;
+  color: var(--ink3);
+  font-size: 15px;
+}
+
+/* ── MODAL OVERLAY ── */
+.overlay {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(28,24,20,0.5);
+  z-index: 200;
+  align-items: center;
+  justify-content: center;
+  padding: 1rem;
+}
+.overlay.open { display: flex; }
+.modal {
+  background: var(--warm-white);
+  border-radius: 20px;
+  width: 100%;
+  max-width: 540px;
+  max-height: 90vh;
+  overflow-y: auto;
+  padding: 2rem;
+  position: relative;
+  box-shadow: 0 20px 60px rgba(28,24,20,0.2);
+}
+.modal-close {
+  position: absolute;
+  top: 1.25rem;
+  right: 1.25rem;
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  border: 1px solid var(--border);
+  background: transparent;
+  color: var(--ink2);
+  font-size: 16px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: 'Instrument Sans', sans-serif;
+}
+.modal-title {
+  font-family: 'Fraunces', serif;
+  font-size: 22px;
+  font-weight: 400;
+  color: var(--ink);
+  margin-bottom: 4px;
+}
+.modal-sub {
+  font-size: 13px;
+  color: var(--ink3);
+  margin-bottom: 1.5rem;
+}
+.form-group { margin-bottom: 14px; }
+.form-label {
+  display: block;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--ink2);
+  margin-bottom: 5px;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+.form-label span { color: var(--rust); }
+.form-input, .form-select, .form-textarea {
+  width: 100%;
+  padding: 9px 12px;
+  border-radius: 10px;
+  border: 1px solid var(--border);
+  background: var(--cream);
+  color: var(--ink);
+  font-size: 14px;
+  font-family: 'Instrument Sans', sans-serif;
+  outline: none;
+  transition: border-color 0.15s;
+}
+.form-input:focus, .form-select:focus, .form-textarea:focus { border-color: var(--rust); }
+.form-textarea { resize: vertical; min-height: 80px; }
+.form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+.form-hint { font-size: 11px; color: var(--ink3); margin-top: 4px; }
+.submit-btn {
+  width: 100%;
+  padding: 12px;
+  border-radius: 12px;
+  background: var(--rust);
+  color: white;
+  font-size: 14px;
+  font-weight: 600;
+  font-family: 'Instrument Sans', sans-serif;
+  border: none;
+  cursor: pointer;
+  margin-top: 8px;
+  transition: background 0.15s;
+}
+.submit-btn:hover { background: #a84422; }
+.success-msg {
+  display: none;
+  text-align: center;
+  padding: 2rem 1rem;
+}
+.success-msg .big-emoji { font-size: 3rem; margin-bottom: 1rem; }
+.success-msg h3 {
+  font-family: 'Fraunces', serif;
+  font-size: 20px;
+  font-weight: 400;
+  margin-bottom: 8px;
+}
+.success-msg p { font-size: 14px; color: var(--ink2); }
+
+/* ── ADMIN ── */
+#admin-panel {
+  display: none;
+  max-width: 1000px;
+  margin: 0 auto;
+  padding: 2rem;
+}
+.admin-title {
+  font-family: 'Fraunces', serif;
+  font-size: 28px;
+  font-weight: 400;
+  margin-bottom: 4px;
+}
+.admin-sub { font-size: 13px; color: var(--ink3); margin-bottom: 2rem; }
+.stat-cards { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin-bottom: 2rem; }
+.stat-card {
+  background: var(--warm-white);
+  border: 1px solid var(--border-soft);
+  border-radius: var(--radius);
+  padding: 1.25rem;
+  text-align: center;
+}
+.stat-card-num {
+  font-family: 'Fraunces', serif;
+  font-size: 2.5rem;
+  font-weight: 600;
+  color: var(--ink);
+}
+.stat-card-label { font-size: 12px; color: var(--ink3); text-transform: uppercase; letter-spacing: 0.05em; margin-top: 4px; }
+.admin-table { width: 100%; border-collapse: collapse; font-size: 13px; background: var(--warm-white); border-radius: var(--radius); overflow: hidden; }
+.admin-table th { padding: 10px 14px; text-align: left; background: var(--cream); color: var(--ink3); font-size: 11px; text-transform: uppercase; letter-spacing: 0.06em; font-weight: 500; }
+.admin-table td { padding: 12px 14px; border-top: 1px solid var(--border-soft); color: var(--ink); }
+.admin-table tr:hover td { background: var(--cream); }
+.pending-section { margin-top: 2rem; }
+.pending-title { font-family: 'Fraunces', serif; font-size: 20px; font-weight: 400; margin-bottom: 1rem; }
+.pending-card {
+  background: var(--warm-white);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 1.25rem;
+  margin-bottom: 10px;
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 1rem;
+}
+.pending-info pre { font-family: 'Instrument Sans', sans-serif; font-size: 12px; color: var(--ink2); white-space: pre-wrap; line-height: 1.7; }
+.pending-actions { display: flex; gap: 8px; flex-shrink: 0; }
+.btn-approve { padding: 7px 14px; border-radius: 8px; background: var(--green); color: white; border: none; font-size: 12px; cursor: pointer; font-family: 'Instrument Sans', sans-serif; }
+.btn-reject  { padding: 7px 14px; border-radius: 8px; background: transparent; color: var(--rust); border: 1px solid var(--rust); font-size: 12px; cursor: pointer; font-family: 'Instrument Sans', sans-serif; }
+.no-pending { font-size: 14px; color: var(--ink3); }
+.admin-back { margin-top: 2rem; display: inline-block; font-size: 13px; color: var(--rust); cursor: pointer; background: none; border: none; font-family: 'Instrument Sans', sans-serif; }
+.clear-btn { padding: 6px 14px; border-radius: 20px; background: transparent; border: 1px solid var(--border); color: var(--ink3); font-size: 12px; cursor: pointer; font-family: 'Instrument Sans', sans-serif; }
+
+/* ── FOOTER ── */
+footer {
+  background: var(--warm-white);
+  border-top: 1px solid var(--border-soft);
+  padding: 1.5rem 2rem;
+}
+.footer-inner {
+  max-width: 1200px;
+  margin: 0 auto;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+.footer-note { font-size: 12px; color: var(--ink3); }
+
+/* ── RESPONSIVE ── */
+@media (max-width: 640px) {
+  .hero-grid { grid-template-columns: 1fr; }
+  .hero-stats { flex-direction: row; align-items: flex-start; }
+  .stat { text-align: left; }
+  .search-input { width: 100%; }
+  .form-row { grid-template-columns: 1fr; }
+  .stat-cards { grid-template-columns: 1fr; }
+}
 </style>
 </head>
 <body>
 
-<header>
-  <div class="wordmark">After<span>Class</span> Bengaluru</div>
+<!-- HEADER -->
+<header class="header">
+  <div class="header-inner">
+    <div class="wordmark">After<span>Class</span></div>
+    <div class="header-right">
+      <button class="btn-admin" onclick="showAdmin()">Analytics</button>
+      <button class="btn-list" onclick="openModal()">List your class →</button>
+    </div>
+  </div>
 </header>
 
-<div class="hero">
-  <div class="hero-left">
-    <h1>Find the right activity<br>for your <em>child</em></h1>
-    <p>Handpicked after-school classes across Bengaluru — verified coaches, honest reviews, and trial classes you can book today.</p>
+<!-- MAIN PAGE -->
+<div id="main-page">
+
+  <!-- HERO -->
+  <section class="hero">
+    <div class="hero-grid">
+      <div>
+        <div class="hero-eyebrow">Bengaluru · HSR · Whitefield · Koramangala</div>
+        <h1 class="hero-title">Find the right<br>activity for your<br><em>child</em></h1>
+        <p class="hero-sub">Real coaches, real classes — offline, nearby, and verified. Direct WhatsApp contact, no middleman.</p>
+      </div>
+      <div class="hero-stats">
+        <div class="stat">
+          <div class="stat-num" id="stat-listings">9</div>
+          <div class="stat-label">Classes listed</div>
+        </div>
+        <div class="stat">
+          <div class="stat-num" id="stat-areas">6</div>
+          <div class="stat-label">Areas covered</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- FILTERS -->
+  <div class="filters-bar">
+    <div class="filters-inner">
+      <div class="search-wrap">
+        <span class="search-icon">⌕</span>
+        <input class="search-input" type="text" id="search" placeholder="Search activity or area..." oninput="render()"/>
+      </div>
+      <select class="filter-select" id="area" onchange="render()">
+        <option value="">All areas</option>
+        <option>HSR Layout</option>
+        <option>Koramangala</option>
+        <option>Indiranagar</option>
+        <option>BTM Layout</option>
+        <option>Sarjapur Road</option>
+        <option>Kanakapura Road</option>
+        <option>Online</option>
+      </select>
+      <select class="filter-select" id="mode" onchange="render()">
+        <option value="">Any mode</option>
+        <option value="Offline">Offline only</option>
+        <option value="Online">Online only</option>
+        <option value="Both">Both</option>
+      </select>
+      <div class="divider-v"></div>
+      <button class="pill active" onclick="setCat('',this)">All</button>
+      <button class="pill" onclick="setCat('Sports & Martial Arts',this)">Sports</button>
+      <button class="pill" onclick="setCat('Arts & Crafts',this)">Arts</button>
+      <button class="pill" onclick="setCat('Dance',this)">Dance</button>
+      <button class="pill" onclick="setCat('STEM & Skills',this)">STEM</button>
+      <button class="pill" onclick="setCat('Wellness',this)">Wellness</button>
+    </div>
   </div>
-  <div class="hero-right">
-    <div class="hero-stat" id="total-count">12</div>
-    <div class="hero-stat-label">Activities listed</div>
+
+  <!-- LISTINGS -->
+  <div class="main">
+    <div class="results-bar">
+      <div class="results-count" id="results-count"></div>
+    </div>
+    <div class="grid" id="grid"></div>
+  </div>
+
+</div>
+
+<!-- ADMIN PANEL -->
+<div id="admin-panel">
+  <div class="admin-title">AfterClass <span style="color:var(--rust);font-style:italic;">Analytics</span></div>
+  <div class="admin-sub">Real-time tracking — clicks stored in this browser. Set up Telegram above for cross-device tracking.</div>
+
+  <div class="stat-cards">
+    <div class="stat-card">
+      <div class="stat-card-num" id="admin-opens">0</div>
+      <div class="stat-card-label">Page opens</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-card-num" id="admin-cards">0</div>
+      <div class="stat-card-label">Cards expanded</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-card-num" id="admin-wa">0</div>
+      <div class="stat-card-label">WhatsApp clicks</div>
+    </div>
+  </div>
+
+  <table class="admin-table" id="admin-table">
+    <thead>
+      <tr>
+        <th>Provider</th>
+        <th>Area</th>
+        <th>WA Clicks</th>
+        <th>Last clicked</th>
+      </tr>
+    </thead>
+    <tbody id="admin-tbody"></tbody>
+  </table>
+
+  <div class="pending-section">
+    <div class="pending-title">Pending listing requests</div>
+    <div id="pending-list"></div>
+  </div>
+
+  <div style="display:flex;gap:10px;margin-top:1.5rem;flex-wrap:wrap;">
+    <button class="clear-btn" onclick="if(confirm('Clear all analytics data?')){localStorage.removeItem('ac_events');renderAdmin();}">Clear analytics</button>
+    <button class="clear-btn" onclick="if(confirm('Clear all pending submissions?')){localStorage.removeItem('ac_pending');renderAdmin();}">Clear pending</button>
+    <button class="admin-back" onclick="showMain()">← Back to listings</button>
   </div>
 </div>
 
-<div class="filters-wrap">
-  <input class="search-input" type="text" id="search" placeholder="Search activity or name..." oninput="render()" />
-  <select id="area" onchange="render()">
-    <option value="">All areas</option>
-    <option>HSR Layout</option>
-    <option>Whitefield</option>
-  </select>
-  <select id="type" onchange="render()">
-    <option value="">Academy &amp; Individual</option>
-    <option>Academy</option>
-    <option>Individual</option>
-  </select>
-  <div class="sep"></div>
-  <button class="pill-btn active" onclick="setCat('', this)">All</button>
-  <button class="pill-btn" onclick="setCat('Sports', this)">Sports</button>
-  <button class="pill-btn" onclick="setCat('Arts', this)">Arts</button>
-  <button class="pill-btn" onclick="setCat('Music', this)">Music</button>
-  <button class="pill-btn" onclick="setCat('Dance', this)">Dance</button>
-  <button class="pill-btn" onclick="setCat('STEM', this)">STEM &amp; Robotics</button>
-  <button class="pill-btn" onclick="setCat('Yoga', this)">Yoga</button>
-</div>
+<!-- LIST YOUR CLASS MODAL -->
+<div class="overlay" id="modal">
+  <div class="modal">
+    <button class="modal-close" onclick="closeModal()">×</button>
+    <div id="form-wrap">
+      <div class="modal-title">List your class</div>
+      <div class="modal-sub">Free to list. We review and add you within 24 hours. Parents contact you directly on WhatsApp.</div>
 
-<div class="main">
-  <div class="results-meta" id="results-meta"></div>
-  <div class="grid" id="grid"></div>
+      <div class="form-group">
+        <label class="form-label">Name / Academy name <span>*</span></label>
+        <input class="form-input" id="f-name" placeholder="e.g. Innovators Chess Academy or Priya Sharma" />
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label class="form-label">What you teach <span>*</span></label>
+          <input class="form-input" id="f-subject" placeholder="e.g. Bharatanatyam, Chess, Football" />
+        </div>
+        <div class="form-group">
+          <label class="form-label">Category <span>*</span></label>
+          <select class="form-select" id="f-cat">
+            <option value="">Select...</option>
+            <option>Sports & Martial Arts</option>
+            <option>Arts & Crafts</option>
+            <option>Dance</option>
+            <option>Music</option>
+            <option>STEM & Skills</option>
+            <option>Wellness</option>
+          </select>
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label class="form-label">Area in Bengaluru <span>*</span></label>
+          <input class="form-input" id="f-area" placeholder="e.g. HSR Layout, Whitefield" />
+        </div>
+        <div class="form-group">
+          <label class="form-label">Mode <span>*</span></label>
+          <select class="form-select" id="f-mode">
+            <option value="">Select...</option>
+            <option>Offline</option>
+            <option>Online</option>
+            <option>Both</option>
+          </select>
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label class="form-label">Age group <span>*</span></label>
+          <input class="form-input" id="f-age" placeholder="e.g. 6–14 years" />
+        </div>
+        <div class="form-group">
+          <label class="form-label">Monthly fee</label>
+          <input class="form-input" id="f-fee" placeholder="e.g. ₹2000 or Contact" />
+        </div>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Class days & timings <span>*</span></label>
+        <input class="form-input" id="f-timings" placeholder="e.g. Mon/Wed/Fri 4–6pm, Weekends 10am–12pm" />
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label class="form-label">Slots available? <span>*</span></label>
+          <select class="form-select" id="f-slots">
+            <option value="">Select...</option>
+            <option>Yes</option>
+            <option>No — waitlist</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label class="form-label">WhatsApp number <span>*</span></label>
+          <input class="form-input" id="f-phone" placeholder="e.g. 9880001234" type="tel" />
+        </div>
+      </div>
+      <div class="form-group">
+        <label class="form-label">One-line description</label>
+        <input class="form-input" id="f-desc" placeholder="What makes your class special?" />
+        <div class="form-hint">Optional but helps parents decide faster.</div>
+      </div>
+      <button class="submit-btn" onclick="submitListing()">Submit for review →</button>
+    </div>
+    <div class="success-msg" id="success-msg">
+      <div class="big-emoji">🎉</div>
+      <h3>Submitted! We'll review within 24 hours.</h3>
+      <p>We'll WhatsApp you once your listing is live. Parents in your area will be able to find you directly.</p>
+    </div>
+  </div>
 </div>
 
 <footer>
-  <div>
-    <div class="wordmark" style="font-size:16px;">After<span style="color:var(--accent)">Class</span> Bengaluru</div>
-    <div class="footer-text" style="margin-top:4px;">Helping Bengaluru parents find the best after-school activities since 2025</div>
+  <div class="footer-inner">
+    <div>
+      <div class="wordmark" style="font-size:16px;">After<span style="color:var(--rust);font-style:italic;">Class</span></div>
+      <div class="footer-note" style="margin-top:4px;">Free resource for Bengaluru parents · Built by Riya</div>
+    </div>
+    <button class="btn-list" onclick="openModal()">List your class →</button>
   </div>
-  <button class="list-cta" onclick="alert('Share your Tally form link here!')">List your activity →</button>
 </footer>
 
 <script>
-const data = [
-  { name: "The Majesstine Sports", area: "HSR Layout", cat: "Sports", catClass: "sport", icon: "🏸", ageMin: 6, ageMax: 99, ageLabel: "6 years+", rating: 4.5, ratingLabel: "4.5/5", price: null, priceLabel: "Contact for fees", timings: "6:30 AM – 9:00 PM", desc: "Badminton academy with all-day coaching slots. One of HSR's most established sports centres.", phone: "08043705000", website: "majesstinesports.com", type: "Academy" },
-  { name: "Sporthood Turfpark", area: "HSR Layout", cat: "Sports", catClass: "sport", icon: "⚽", ageMin: 5, ageMax: 18, ageLabel: "5–18 years", rating: 4.2, ratingLabel: "4.2/5", price: 4666, priceLabel: "₹4,666/month", timings: "4:00 PM – 7:00 PM (Kids)", desc: "Football training on quality turf. Dedicated kids' evening batches. Part of the Sporthood network.", phone: "08088253254", website: "sporthood.in", type: "Academy" },
-  { name: "Rohan School of Music", area: "HSR Layout", cat: "Music", catClass: "music", icon: "🎵", ageMin: 6, ageMax: 99, ageLabel: "6 years+", rating: 4.8, ratingLabel: "4.8/5", price: null, priceLabel: "Contact for fees", timings: "Tue–Sun, slot based", desc: "Multi-instrument music school covering guitar, keyboard, violin and vocals. Highly rated in HSR.", phone: "09606812345", website: "rohanschoolofmusic.com", type: "Academy" },
-  { name: "Roboprenr", area: "HSR Layout", cat: "STEM", catClass: "stem", icon: "🤖", ageMin: 8, ageMax: 18, ageLabel: "8–18 years", rating: 4.7, ratingLabel: "4.7/5", price: null, priceLabel: "Contact for fees", timings: "Weekends & evenings", desc: "Robotics and AI learning for kids. Weekend and evening batches. Also operates in Yelahanka.", phone: "09513330140", website: "roboprenr.com", type: "Academy" },
-  { name: "Innovators Chess Academy", area: "HSR Layout", cat: "STEM", catClass: "stem", icon: "♟️", ageMin: 4, ageMax: 99, ageLabel: "4 years+", rating: 4.9, ratingLabel: "4.9/5", price: null, priceLabel: "Contact for fees", timings: "Weekends 10 AM – 1 PM", desc: "Top-rated chess academy in HSR. Weekend batches, tournament preparation and competitive coaching.", phone: "09845247653", website: "icachess.in", type: "Academy" },
-  { name: "Advaitam Child Enrichment", area: "HSR Layout", cat: "Arts", catClass: "arts", icon: "🎭", ageMin: 3, ageMax: 12, ageLabel: "3–12 years", rating: 4.4, ratingLabel: "4.4/5", price: null, priceLabel: "Contact for fees", timings: "Weekdays 4 PM – 6 PM", desc: "Dramatics and arts enrichment for young children. Focused on creativity, expression and confidence.", phone: "09901016500", website: "advaitam.in", type: "Academy" },
-  { name: "CHESS KLUB", area: "HSR Layout", cat: "STEM", catClass: "stem", icon: "♟️", ageMin: 5, ageMax: 15, ageLabel: "5–15 years", rating: 4.6, ratingLabel: "4.6/5", price: null, priceLabel: "Contact for fees", timings: "Morning & evening slots", desc: "Chess coaching with morning and evening options. Also available online. Structured curriculum for all levels.", phone: "09141003000", website: "chessklub.com", type: "Academy" },
-  { name: "Hip Hop India Dance Co", area: "HSR Layout", cat: "Dance", catClass: "dance", icon: "💃", ageMin: 6, ageMax: 99, ageLabel: "6 years+", rating: 4.7, ratingLabel: "4.7/5", price: null, priceLabel: "Contact for fees", timings: "Slot based", desc: "Professional hip-hop and street dance training. Also operates in Koramangala. Performance opportunities.", phone: "09845350381", website: "hiphopindia.com", type: "Academy" },
-  { name: "Sushrutha Reddy", area: "HSR Layout", cat: "STEM", catClass: "stem", icon: "♟️", ageMin: 4, ageMax: 99, ageLabel: "4 years+", rating: 4.9, ratingLabel: "4.9/5", price: null, priceLabel: "Contact for fees", timings: "Slot based", desc: "Individual chess coach with expert-level credentials. Part of the Innovators Chess Academy network.", phone: "09845247653", website: "icachess.in", type: "Individual" },
-  { name: "Ashwini Narasimhan", area: "HSR Layout", cat: "Music", catClass: "music", icon: "🎶", ageMin: 6, ageMax: 99, ageLabel: "6 years+", rating: null, ratingLabel: "15+ yrs experience", price: null, priceLabel: "Contact for fees", timings: "Evenings", desc: "Experienced Carnatic vocal teacher with 15+ years of teaching. Evening slots available in HSR Layout.", phone: "09901016500", website: "teacheron.com", type: "Individual" },
-  { name: "Jayshree", area: "HSR Layout", cat: "Yoga", catClass: "stem", icon: "🧘", ageMin: 0, ageMax: 99, ageLabel: "All ages", rating: null, ratingLabel: "Expert", price: null, priceLabel: "Contact for fees", timings: "Private sessions", desc: "Therapeutic yoga instructor offering private sessions in HSR Layout. Specialises in remedial and wellness yoga.", phone: "", website: "wellintra.com", type: "Individual" },
-  { name: "Haripriya", area: "HSR Layout", cat: "Dance", catClass: "dance", icon: "💃", ageMin: 5, ageMax: 99, ageLabel: "5 years+", rating: null, ratingLabel: "15+ yrs experience", price: null, priceLabel: "Contact for fees", timings: "Batch based", desc: "Bharatanatyam teacher with 15+ years experience. Batch-based classes in HSR Layout.", phone: "", website: "teacheron.com", type: "Individual" },
-  { name: "Gopalan Sports Center", area: "Whitefield", cat: "Sports", catClass: "sport", icon: "🏸", ageMin: 5, ageMax: 16, ageLabel: "5–16 years", rating: 4.4, ratingLabel: "4.4/5", price: 2500, priceLabel: "₹2,000–3,000/month", timings: "4 PM – 6 PM weekdays", desc: "Badminton and gymnastics coaching in Whitefield. Affordable fee structure and experienced coaches.", phone: "06364896510", website: "gopalansportscenter.com", type: "Academy" },
-  { name: "Jagriti Theatre", area: "Whitefield", cat: "Arts", catClass: "arts", icon: "🎭", ageMin: 8, ageMax: 18, ageLabel: "8–18 years", rating: 4.8, ratingLabel: "4.8/5", price: null, priceLabel: "Contact for fees", timings: "TAP Program (9 months)", desc: "Renowned theatre academy in Whitefield. The Apprentice Program (TAP) is a 9-month intensive for young performers.", phone: "08041242879", website: "jagrititheatre.com", type: "Academy" },
-  { name: "Droid Magix Solutions", area: "Whitefield", cat: "STEM", catClass: "stem", icon: "🤖", ageMin: 7, ageMax: 15, ageLabel: "7–15 years", rating: 4.2, ratingLabel: "4.2/5", price: 2000, priceLabel: "₹2,000+/month", timings: "Workshop based", desc: "Robotics workshops for children in Whitefield. Hands-on project-based learning approach.", phone: "09886752554", website: "droidmagix.com", type: "Academy" },
-  { name: "The Lewis Foundation", area: "Whitefield", cat: "Dance", catClass: "dance", icon: "🩰", ageMin: 4, ageMax: 99, ageLabel: "4 years+", rating: 4.9, ratingLabel: "4.9/5", price: null, priceLabel: "Contact for fees", timings: "Batch based", desc: "Bengaluru's leading ballet and dance institution. City-wide presence with base in Whitefield. Exceptional reputation.", phone: "08041150610", website: "thelewisfoundation.org", type: "Academy" },
-  { name: "Hum & Strum Music School", area: "Whitefield", cat: "Music", catClass: "music", icon: "🎸", ageMin: 6, ageMax: 99, ageLabel: "6 years+", rating: 4.5, ratingLabel: "4.5/5", price: null, priceLabel: "Contact for fees", timings: "Tue–Sun 4 PM – 9 PM", desc: "Vocals and instruments school serving Whitefield and Sarjapur. Wide time-slot availability on evenings.", phone: "09739039928", website: "humandstrummusicschool.com", type: "Academy" },
-  { name: "Reshma Ravi", area: "Whitefield", cat: "Dance", catClass: "dance", icon: "💃", ageMin: 5, ageMax: 99, ageLabel: "5 years+", rating: null, ratingLabel: "20+ yrs experience", price: null, priceLabel: "Contact for fees", timings: "Batch based", desc: "Bharatanatyam teacher with 20+ years experience. Batch-based classes in Whitefield.", phone: "", website: "lasyadance.com", type: "Individual" },
-  { name: "Lasya School of Dance", area: "Whitefield", cat: "Dance", catClass: "dance", icon: "💃", ageMin: 5, ageMax: 99, ageLabel: "5 years+", rating: null, ratingLabel: "Traditional", price: null, priceLabel: "Contact for fees", timings: "Batch based", desc: "Classical Bharatanatyam school in Whitefield with a traditional teaching approach.", phone: "09845012345", website: "lasyadance.com", type: "Academy" },
-  { name: "Samarpana Dance Academy", area: "Whitefield", cat: "Dance", catClass: "dance", icon: "💃", ageMin: 6, ageMax: 99, ageLabel: "6 years+", rating: null, ratingLabel: "Veteran Guru", price: null, priceLabel: "Contact for fees", timings: "Individual focus", desc: "Bharatanatyam academy led by a veteran guru. Individual-focused training in Whitefield.", phone: "09845012345", website: "samarpana.in", type: "Academy" },
+// ── REAL DATA ──
+const listings = [
+  {
+    id: 1,
+    name: "Silpachakram Ceramic Pottery Studio",
+    subject: "Pottery & Ceramics",
+    cat: "Arts & Crafts",
+    catClass: "cat-arts",
+    icon: "🏺",
+    area: "Sarjapur Road",
+    fullArea: "Muthanallur Cross, Sarjapur Road",
+    mode: "Offline",
+    ageMin: 2.5, ageMax: 99, ageLabel: "2.5 years+",
+    days: "Friday to Sunday",
+    timings: "10 AM–1 PM & 3–6 PM",
+    fee: 1200,
+    feeLabel: "₹1,200",
+    feeNote: "per class",
+    slots: true,
+    phone: "7892943013",
+    desc: "Hands-on ceramic pottery for all ages starting from 2.5 years. Two convenient slots on weekends and Fridays.",
+    accent: "#6B3D9F"
+  },
+  {
+    id: 2,
+    name: "Nakshatra Rubik's Magic",
+    subject: "Rubik's Cube · Handwriting · Calligraphy",
+    cat: "STEM & Skills",
+    catClass: "cat-stem",
+    icon: "🎯",
+    area: "BTM Layout",
+    fullArea: "BTM 6th Stage",
+    mode: "Offline",
+    ageMin: 6, ageMax: 99, ageLabel: "6 years+",
+    days: "Flexible",
+    timings: "As per child's flexibility",
+    fee: null,
+    feeLabel: "Contact for fees",
+    feeNote: "",
+    slots: true,
+    phone: "6361011596",
+    desc: "Unique combination of Rubik's Cube solving, handwriting improvement and calligraphy. Timings adjusted to suit each child.",
+    accent: "#185FA5"
+  },
+  {
+    id: 3,
+    name: "The Dojo — JKA Karate",
+    subject: "JKA Karate",
+    cat: "Sports & Martial Arts",
+    catClass: "cat-sports",
+    icon: "🥋",
+    area: "HSR Layout",
+    fullArea: "HSR Layout",
+    mode: "Offline",
+    ageMin: 4, ageMax: 99, ageLabel: "4 years+",
+    days: "Weekdays & Weekends",
+    timings: "Weekday & weekend batches available",
+    fee: 2800,
+    feeLabel: "₹2,800",
+    feeNote: "/ month + admission & dress fees",
+    slots: true,
+    phone: "8910990587",
+    desc: "Japan Karate Association (JKA) certified karate training. Multiple batch options across weekdays and weekends.",
+    accent: "#2D6A4F"
+  },
+  {
+    id: 4,
+    name: "Good Move Studios — JKA Karate",
+    subject: "JKA Karate",
+    cat: "Sports & Martial Arts",
+    catClass: "cat-sports",
+    icon: "🥋",
+    area: "Koramangala",
+    fullArea: "Koramangala 4th Block",
+    mode: "Offline",
+    ageMin: 4, ageMax: 99, ageLabel: "4 years+",
+    days: "Weekends",
+    timings: "Weekend batches available",
+    fee: 3000,
+    feeLabel: "₹3,000",
+    feeNote: "/ month + admission & dress fees",
+    slots: true,
+    phone: "8910990587",
+    desc: "JKA certified karate at Koramangala 4th Block. Weekend-only batches — perfect for school schedules.",
+    accent: "#2D6A4F"
+  },
+  {
+    id: 5,
+    name: "The Swingers Dance Inc",
+    subject: "Jazz · Hip Hop · Kpop · Bollyfunk · Dancefit",
+    cat: "Dance",
+    catClass: "cat-dance",
+    icon: "💃",
+    area: "Indiranagar",
+    fullArea: "Indiranagar & Koramangala",
+    mode: "Both",
+    ageMin: 3, ageMax: 60, ageLabel: "3–60 years",
+    days: "2 days/week",
+    timings: "Weekday & weekend options",
+    fee: 2000,
+    feeLabel: "₹2,000",
+    feeNote: "/ month",
+    slots: true,
+    phone: "9900027050",
+    website: "www.swingersdance.com",
+    desc: "Western dance forms including Jazz, Hip Hop, Kpop, Bollyfunk and fitness dance. Both online and offline classes available.",
+    accent: "#C41A5E"
+  },
+  {
+    id: 7,
+    name: "Advaitam Child Enrichment",
+    subject: "Handwriting · Brain Training · Speak Up · Spelling · English Foundation",
+    cat: "STEM & Skills",
+    catClass: "cat-stem",
+    icon: "🧠",
+    area: "HSR Layout",
+    fullArea: "HSR Layout",
+    mode: "Offline",
+    ageMin: 5, ageMax: 12, ageLabel: "5–12 years",
+    days: "Mon–Fri",
+    timings: "9 AM – 1 PM",
+    fee: 6000,
+    feeLabel: "₹6,000",
+    feeNote: "/ month approx",
+    slots: true,
+    phone: "9513344121",
+    website: "advaitam.in",
+    desc: "Holistic child enrichment — handwriting, brain training, public speaking, spelling and English foundation. Season 14 now open.",
+    accent: "#185FA5"
+  },
+  {
+    id: 8,
+    name: "Ranjitha Nagan — Indian Folk Art",
+    subject: "Mandala · Warli · Madhubani · Lippan Art",
+    cat: "Arts & Crafts",
+    catClass: "cat-arts",
+    icon: "🪷",
+    area: "Kanakapura Road",
+    fullArea: "Kanakapura Road, Near Silk Institute Metro",
+    mode: "Both",
+    ageMin: 8, ageMax: 99, ageLabel: "8 years+ & Adults",
+    days: "Flexible",
+    timings: "1-on-1 sessions, flexible schedule",
+    fee: null,
+    feeLabel: "₹6k – ₹15k",
+    feeNote: "per package · materials included",
+    slots: true,
+    phone: "7892702049",
+    desc: "1-on-1 Indian folk art — Mandala, Warli, Madhubani and Lippan. Basic 4 sessions ₹6k · Advanced 8 sessions ₹12k · Combo ₹15k. All materials included.",
+    accent: "#6B3D9F"
+  },
+  {
+    id: 9,
+    name: "Artsy by Roxy Studio",
+    subject: "Visual Art",
+    cat: "Arts & Crafts",
+    catClass: "cat-arts",
+    icon: "🖌️",
+    area: "Indiranagar",
+    fullArea: "Indiranagar",
+    mode: "Both",
+    ageMin: 4, ageMax: 99, ageLabel: "Offline 4+ · Online 5+",
+    days: "Weekdays",
+    timings: "Weekday evenings",
+    fee: 500,
+    feeLabel: "From ₹500",
+    feeNote: "/ month · multiple courses",
+    slots: true,
+    phone: "9535898449",
+    website: "artsybyroxystudio.graphy.com",
+    desc: "Visual art classes by Raksha Mallya. Multiple courses from ₹500/month. Offline in Indiranagar and online options available.",
+    accent: "#6B3D9F"
+  },
+  {
+    id: 6,
+    name: "VaaraSri Foundry",
+    subject: "Dot Mandala · EFT Tapping · Colour Therapy",
+    cat: "Wellness",
+    catClass: "cat-wellness",
+    icon: "🎨",
+    area: "Online",
+    fullArea: "Online — Pan India",
+    mode: "Online",
+    ageMin: 9, ageMax: 99, ageLabel: "9 years+",
+    days: "Mon–Fri",
+    timings: "11 AM–12:30 PM & 2–3:30 PM (May 2026 batches)",
+    fee: null,
+    feeLabel: "Contact for fees",
+    feeNote: "Materials extra",
+    slots: true,
+    phone: "8904696118",
+    instagram: "vaarasrifoundry",
+    desc: "Mind-body wellness through Dot Mandala art, EFT Tapping and Rainbow Colour Therapy. Supports calmness, focus and confidence.",
+    accent: "#C4522A"
+  }
 ];
 
 let activeCat = '';
 
 function setCat(cat, btn) {
   activeCat = cat;
-  document.querySelectorAll('.pill-btn').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.pill').forEach(p => p.classList.remove('active'));
   btn.classList.add('active');
   render();
 }
 
-function ageMatch(item, val) {
-  if (!val) return true;
-  const v = parseInt(val);
-  if (v === 5) return item.ageMin <= 8;
-  if (v === 9) return item.ageMin <= 12 && item.ageMax >= 9;
-  if (v === 13) return item.ageMax >= 13;
-  return true;
-}
-
-function stars(r) {
-  return '★'.repeat(Math.floor(r)) + (r % 1 >= 0.5 ? '½' : '');
-}
-
 function render() {
-  const q = document.getElementById('search').value.toLowerCase();
+  const q    = document.getElementById('search').value.toLowerCase();
   const area = document.getElementById('area').value;
-  const type = document.getElementById('type').value;
+  const mode = document.getElementById('mode').value;
 
-  const filtered = data.filter(a => {
-    const mQ = !q || a.name.toLowerCase().includes(q) || a.area.toLowerCase().includes(q) || a.cat.toLowerCase().includes(q);
-    const mA = !area || a.area === area;
-    const mC = !activeCat || a.cat === activeCat;
-    const mT = !type || a.type === type;
-    return mQ && mA && mC && mT;
+  const filtered = listings.filter(a => {
+    const mQ    = !q    || a.name.toLowerCase().includes(q) || a.subject.toLowerCase().includes(q) || a.area.toLowerCase().includes(q);
+    const mArea = !area || a.area === area || a.fullArea.includes(area);
+    const mMode = !mode || a.mode === mode || (mode === 'Both' && a.mode === 'Both');
+    const mCat  = !activeCat || a.cat === activeCat;
+    return mQ && mArea && mMode && mCat;
   });
 
-  document.getElementById('results-meta').textContent = filtered.length + ' activit' + (filtered.length === 1 ? 'y' : 'ies') + ' found';
-  document.getElementById('total-count').textContent = data.length;
+  document.getElementById('results-count').textContent =
+    filtered.length + ' class' + (filtered.length !== 1 ? 'es' : '') + ' found';
+  document.getElementById('stat-listings').textContent = listings.length;
 
-  if (filtered.length === 0) {
-    document.getElementById('grid').innerHTML = '<div class="empty">No activities match your filters.<br>Try adjusting your search or removing a filter.</div>';
+  if (!filtered.length) {
+    document.getElementById('grid').innerHTML =
+      '<div class="empty">No classes match your filters.<br>Try adjusting your search.</div>';
     return;
   }
 
   document.getElementById('grid').innerHTML = filtered.map(a => {
-    const phone = a.phone ? a.phone.replace(/\s/g, '') : '';
-    const waLink = phone
-      ? `https://wa.me/91${phone}?text=Hi%2C%20I%20found%20${encodeURIComponent(a.name)}%20on%20AfterClass%20Bengaluru.%20I%27d%20like%20to%20know%20more.`
-      : `https://${a.website}`;
-    const btnLabel = phone ? 'WhatsApp \u2192' : 'Visit site \u2192';
-    const typeTag = a.type === 'Individual'
-      ? '<span class="chip" style="color:#9C4A1A;border-color:rgba(156,74,26,0.25);background:rgba(156,74,26,0.05);">Individual</span>'
-      : '<span class="chip">Academy</span>';
+    const annual = a.fee ? `≈ ₹${(a.fee * 12).toLocaleString('en-IN')}/year` : '';
+    const waMsg  = encodeURIComponent(`Hi, I found ${a.name} on AfterClass Bengaluru. I'd like to know more about your classes.`);
+    const waLink = `https://wa.me/91${a.phone}?text=${waMsg}`;
+    const modeClass = a.mode === 'Offline' ? 'mode-offline' : a.mode === 'Online' ? 'mode-online' : 'mode-both';
+
     return `
-    <div class="card">
-      <div class="card-head">
-        <div style="display:flex;align-items:flex-start;gap:12px;flex:1;">
-          <div class="activity-icon">${a.icon}</div>
+    <div class="card" onclick="trackCard('${a.name.replace(/'/g,"\\'")}')">
+      <div class="card-accent" style="background:${a.accent};"></div>
+      <div class="card-body">
+        <div class="card-top">
+          <div style="display:flex;gap:10px;align-items:flex-start;flex:1;">
+            <div class="card-icon">${a.icon}</div>
+            <div class="card-identity">
+              <div class="card-name">${a.name}</div>
+              <div class="card-area">📍 ${a.fullArea}</div>
+            </div>
+          </div>
+          <span class="cat-pill ${a.catClass}">${a.cat}</span>
+        </div>
+
+        <div class="card-desc">${a.desc}</div>
+
+        <div class="chips">
+          <span class="chip">${a.ageLabel}</span>
+          <span class="chip mode-badge ${modeClass}">${a.mode}</span>
+          <span class="chip">🗓 ${a.days}</span>
+          <span class="chip">⏰ ${a.timings}</span>
+          ${a.slots ? '<span class="chip chip-green">Slots open</span>' : '<span class="chip">Waitlist</span>'}
+        </div>
+
+        <div class="card-footer">
           <div>
-            <div class="card-title">${a.name}</div>
-            <div class="card-area">${a.area}</div>
+            <div class="price-main">${a.feeLabel} <span class="price-unit">${a.feeNote}</span></div>
+            ${annual ? `<div class="price-annual">${annual}</div>` : ''}
           </div>
+          <a class="wa-btn" href="${waLink}" target="_blank"
+             onclick="trackWA('${a.name.replace(/'/g,"\\'")}','${a.area}','${a.cat}','enquiry');event.stopPropagation();">
+            <svg viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+            WhatsApp
+          </a>
         </div>
-        <span class="cat-tag ${a.catClass}">${a.cat}</span>
-      </div>
-      <div class="card-desc">${a.desc}</div>
-      <div class="card-chips">
-        <span class="chip">${a.ageLabel}</span>
-        ${typeTag}
-        <span class="chip" style="color:#5C5750;">\u23F0 ${a.timings}</span>
-      </div>
-      <div class="card-footer">
-        <div class="price-block">
-          <span class="price-amount" style="font-size:15px;">${a.priceLabel}</span>
-          <div class="rating-row" style="margin-top:4px;">
-            ${a.rating ? `<span class="star">\u2605</span><span class="rating-num">${a.rating}</span>` : ''}
-            <span style="color:var(--ink3);">${a.ratingLabel}</span>
-          </div>
-        </div>
-        <a class="cta-btn primary" href="${waLink}" target="_blank" onclick="trackClick('${a.name.replace(/'/g,"\\'")}', '${a.area}', 'enquiry')">${btnLabel}</a>
       </div>
     </div>`;
   }).join('');
 }
 
-// --- TRACKING ---
-function trackClick(name, area, type) {
-  const clicks = JSON.parse(localStorage.getItem('ac_clicks') || '[]');
-  clicks.push({ name, area, type, time: new Date().toISOString() });
-  localStorage.setItem('ac_clicks', JSON.stringify(clicks));
+// ── MODAL ──
+function openModal() {
+  document.getElementById('modal').classList.add('open');
+  document.getElementById('form-wrap').style.display = 'block';
+  document.getElementById('success-msg').style.display = 'none';
+}
+function closeModal() {
+  document.getElementById('modal').classList.remove('open');
+}
+document.getElementById('modal').addEventListener('click', function(e) {
+  if (e.target === this) closeModal();
+});
+
+function submitListing() {
+  const name     = document.getElementById('f-name').value.trim();
+  const subject  = document.getElementById('f-subject').value.trim();
+  const cat      = document.getElementById('f-cat').value;
+  const area     = document.getElementById('f-area').value.trim();
+  const mode     = document.getElementById('f-mode').value;
+  const age      = document.getElementById('f-age').value.trim();
+  const fee      = document.getElementById('f-fee').value.trim();
+  const timings  = document.getElementById('f-timings').value.trim();
+  const slots    = document.getElementById('f-slots').value;
+  const phone    = document.getElementById('f-phone').value.trim();
+  const desc     = document.getElementById('f-desc').value.trim();
+
+  if (!name || !subject || !cat || !area || !mode || !age || !timings || !slots || !phone) {
+    alert('Please fill in all required fields (marked with *)');
+    return;
+  }
+
+  const submission = { name, subject, cat, area, mode, age, fee, timings, slots, phone, desc, submitted: new Date().toISOString() };
+
+  // Save to pending
+  try {
+    const pending = JSON.parse(localStorage.getItem('ac_pending') || '[]');
+    pending.push(submission);
+    localStorage.setItem('ac_pending', JSON.stringify(pending));
+  } catch(e) {}
+
+  // Notify via Telegram
+  tg(`📋 <b>New listing request!</b>\n\n<b>${name}</b>\n${subject} · ${area}\nMode: ${mode} · Age: ${age}\nFee: ${fee || 'Not given'}\nTimings: ${timings}\nSlots: ${slots}\nPhone: ${phone}\nDesc: ${desc || '—'}\n\nCheck admin panel to approve.`);
+
+  document.getElementById('form-wrap').style.display = 'none';
+  document.getElementById('success-msg').style.display = 'block';
 }
 
-// --- ADMIN DASHBOARD ---
+// ── ADMIN ──
+// ── CHANGE THIS PASSWORD ──
+const ADMIN_PASSWORD = 'afterclass2026';
+
 function showAdmin() {
-  const clicks = JSON.parse(localStorage.getItem('ac_clicks') || '[]');
-  const counts = {};
-  clicks.forEach(c => {
-    const k = c.name;
-    if (!counts[k]) counts[k] = { name: c.name, area: c.area, trial: 0, enquiry: 0, last: c.time };
-    counts[k][c.type]++;
-    if (c.time > counts[k].last) counts[k].last = c.time;
-  });
-  const rows = Object.values(counts).sort((a, b) => (b.trial + b.enquiry) - (a.trial + a.enquiry));
-
-  document.body.innerHTML = `
-    <div style="font-family:'DM Sans',sans-serif;max-width:900px;margin:0 auto;padding:2rem;">
-      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:2rem;padding-bottom:1rem;border-bottom:1px solid rgba(0,0,0,0.1);">
-        <div>
-          <div style="font-family:'Playfair Display',serif;font-size:22px;font-weight:600;">AfterClass <span style="color:#D95F2B;">Analytics</span></div>
-          <div style="font-size:13px;color:#9A9490;margin-top:4px;">WhatsApp button clicks — stored in this browser</div>
-        </div>
-        <div style="text-align:right;">
-          <div style="font-size:2rem;font-family:'Playfair Display',serif;font-weight:600;">${clicks.length}</div>
-          <div style="font-size:11px;color:#9A9490;text-transform:uppercase;letter-spacing:0.05em;">Total clicks</div>
-        </div>
-      </div>
-      ${rows.length === 0 ? `
-        <div style="text-align:center;padding:4rem;color:#9A9490;font-size:15px;">
-          No clicks recorded yet.<br><br>
-          <a href="/" style="color:#D95F2B;text-decoration:none;font-weight:500;">← Go to listing page</a>
-        </div>
-      ` : `
-        <table style="width:100%;border-collapse:collapse;font-size:13px;">
-          <thead>
-            <tr style="border-bottom:1px solid rgba(0,0,0,0.1);">
-              <th style="text-align:left;padding:8px 12px 12px 0;color:#9A9490;font-weight:500;font-size:11px;text-transform:uppercase;letter-spacing:0.05em;">Provider</th>
-              <th style="text-align:left;padding:8px 12px 12px;color:#9A9490;font-weight:500;font-size:11px;text-transform:uppercase;letter-spacing:0.05em;">Area</th>
-              <th style="text-align:center;padding:8px 12px 12px;color:#9A9490;font-weight:500;font-size:11px;text-transform:uppercase;letter-spacing:0.05em;">Trial clicks</th>
-              <th style="text-align:center;padding:8px 12px 12px;color:#9A9490;font-weight:500;font-size:11px;text-transform:uppercase;letter-spacing:0.05em;">Enquiry clicks</th>
-              <th style="text-align:center;padding:8px 12px 12px;color:#9A9490;font-weight:500;font-size:11px;text-transform:uppercase;letter-spacing:0.05em;">Total</th>
-              <th style="text-align:right;padding:8px 0 12px 12px;color:#9A9490;font-weight:500;font-size:11px;text-transform:uppercase;letter-spacing:0.05em;">Last click</th>
-            </tr>
-          </thead>
-          <tbody>
-            ${rows.map((r, i) => `
-              <tr style="border-bottom:1px solid rgba(0,0,0,0.05);${i===0?'background:#FFF9F6;':''}">
-                <td style="padding:12px 12px 12px 0;font-weight:500;color:#1A1814;">${r.name}</td>
-                <td style="padding:12px;color:#5C5750;">${r.area}</td>
-                <td style="padding:12px;text-align:center;">
-                  ${r.trial > 0 ? `<span style="background:#E8F5EE;color:#276749;padding:3px 10px;border-radius:20px;font-weight:500;">${r.trial}</span>` : '<span style="color:#9A9490;">—</span>'}
-                </td>
-                <td style="padding:12px;text-align:center;">
-                  ${r.enquiry > 0 ? `<span style="background:#E8F0F9;color:#185FA5;padding:3px 10px;border-radius:20px;font-weight:500;">${r.enquiry}</span>` : '<span style="color:#9A9490;">—</span>'}
-                </td>
-                <td style="padding:12px;text-align:center;font-weight:500;color:#D95F2B;">${r.trial + r.enquiry}</td>
-                <td style="padding:12px 0 12px 12px;text-align:right;color:#9A9490;font-size:12px;">${new Date(r.last).toLocaleDateString('en-IN', {day:'numeric',month:'short',hour:'2-digit',minute:'2-digit'})}</td>
-              </tr>
-            `).join('')}
-          </tbody>
-        </table>
-        <div style="margin-top:2rem;padding:1rem;background:#F5F2EC;border-radius:12px;font-size:13px;color:#5C5750;line-height:1.6;">
-          <strong style="color:#1A1814;">Note:</strong> These clicks are saved in <em>this browser only</em>. 
-          Once you put this live on a real domain, add Google Analytics or a backend to track clicks from all visitors — not just yours.
-        </div>
-        <div style="margin-top:1.5rem;">
-          <button onclick="if(confirm('Clear all click data?')){localStorage.removeItem('ac_clicks');location.reload();}" style="font-size:12px;color:#9A9490;background:none;border:1px solid rgba(0,0,0,0.1);padding:6px 14px;border-radius:20px;cursor:pointer;font-family:'DM Sans',sans-serif;">Clear all data</button>
-          <a href="/" style="margin-left:12px;font-size:12px;color:#D95F2B;text-decoration:none;font-weight:500;">← Back to listing</a>
-        </div>
-      `}
-    </div>
-  `;
+  const stored = sessionStorage.getItem('ac_auth');
+  if (stored === ADMIN_PASSWORD) {
+    openAdminPanel();
+    return;
+  }
+  const pwd = prompt('Enter admin password:');
+  if (pwd === ADMIN_PASSWORD) {
+    sessionStorage.setItem('ac_auth', pwd);
+    openAdminPanel();
+  } else if (pwd !== null) {
+    alert('Incorrect password.');
+  }
 }
 
+function openAdminPanel() {
+  document.getElementById('main-page').style.display = 'none';
+  document.getElementById('admin-panel').style.display = 'block';
+  renderAdmin();
+}
+function showMain() {
+  document.getElementById('admin-panel').style.display = 'none';
+  document.getElementById('main-page').style.display = 'block';
+}
+
+function renderAdmin() {
+  const events = JSON.parse(localStorage.getItem('ac_events') || '[]');
+  const opens  = events.filter(e => e.type === 'page_open').length;
+  const cards  = events.filter(e => e.type === 'card_click').length;
+  const was    = events.filter(e => e.type === 'whatsapp_click').length;
+
+  document.getElementById('admin-opens').textContent = opens;
+  document.getElementById('admin-cards').textContent = cards;
+  document.getElementById('admin-wa').textContent    = was;
+
+  // WA clicks per provider
+  const waEvents = events.filter(e => e.type === 'whatsapp_click');
+  const counts = {};
+  waEvents.forEach(e => {
+    const k = e.data.name;
+    if (!counts[k]) counts[k] = { name: k, area: e.data.area, clicks: 0, last: e.time };
+    counts[k].clicks++;
+    if (e.time > counts[k].last) counts[k].last = e.time;
+  });
+  const rows = Object.values(counts).sort((a,b) => b.clicks - a.clicks);
+
+  const tbody = document.getElementById('admin-tbody');
+  if (!rows.length) {
+    tbody.innerHTML = '<tr><td colspan="4" style="color:var(--ink3);padding:1.5rem;text-align:center;">No WhatsApp clicks yet</td></tr>';
+  } else {
+    tbody.innerHTML = rows.map(r => `
+      <tr>
+        <td><strong>${r.name}</strong></td>
+        <td>${r.area}</td>
+        <td><span style="background:var(--rust-light);color:var(--rust);padding:2px 10px;border-radius:20px;font-weight:600;">${r.clicks}</span></td>
+        <td style="color:var(--ink3);">${new Date(r.last).toLocaleString('en-IN',{day:'numeric',month:'short',hour:'2-digit',minute:'2-digit'})}</td>
+      </tr>`).join('');
+  }
+
+  // Pending submissions
+  const pending = JSON.parse(localStorage.getItem('ac_pending') || '[]');
+  const pl = document.getElementById('pending-list');
+  if (!pending.length) {
+    pl.innerHTML = '<div class="no-pending">No pending submissions right now.</div>';
+  } else {
+    pl.innerHTML = pending.map((p, i) => `
+      <div class="pending-card" id="pending-${i}">
+        <div class="pending-info">
+          <pre><b>${p.name}</b>
+${p.subject} · ${p.cat}
+Area: ${p.area} · Mode: ${p.mode}
+Age: ${p.age} · Fee: ${p.fee || 'Not given'}
+Timings: ${p.timings}
+Slots: ${p.slots}
+Phone: ${p.phone}
+${p.desc ? 'Desc: '+p.desc : ''}
+Submitted: ${new Date(p.submitted).toLocaleString('en-IN')}</pre>
+        </div>
+        <div class="pending-actions">
+          <button class="btn-approve" onclick="approvePending(${i})">✓ Approve</button>
+          <button class="btn-reject"  onclick="rejectPending(${i})">✕ Reject</button>
+        </div>
+      </div>`).join('');
+  }
+}
+
+function approvePending(i) {
+  const pending = JSON.parse(localStorage.getItem('ac_pending') || '[]');
+  const p = pending[i];
+  tg(`✅ <b>Listing approved:</b> ${p.name}\nRemember to add them to the HTML data array and re-upload to GitHub.`);
+  alert(`Approved! Remember to add "${p.name}" to the listings data in your HTML file and re-upload to GitHub.`);
+  pending.splice(i, 1);
+  localStorage.setItem('ac_pending', JSON.stringify(pending));
+  renderAdmin();
+}
+
+function rejectPending(i) {
+  const pending = JSON.parse(localStorage.getItem('ac_pending') || '[]');
+  pending.splice(i, 1);
+  localStorage.setItem('ac_pending', JSON.stringify(pending));
+  renderAdmin();
+}
+
+// Check for admin mode
 if (new URLSearchParams(window.location.search).get('admin') === '1') {
   document.addEventListener('DOMContentLoaded', showAdmin);
-} else {
-  render();
 }
+// Also hide Analytics button from header — only show on ?admin=1
+if (new URLSearchParams(window.location.search).get('admin') !== '1') {
+  document.addEventListener('DOMContentLoaded', function() {
+    const adminBtn = document.querySelector('.btn-admin');
+    if (adminBtn) adminBtn.style.display = 'none';
+  });
+}
+
+render();
 </script>
 </body>
 </html>
